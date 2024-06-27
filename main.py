@@ -84,9 +84,9 @@ def check_neighbours_me_alive(top_l, top, top_r, mid_l, mid_r, bottom_l, bottom,
     if alive == 2 or alive == 3:
         my_status = 1
 
-    neighbourhood = numpy.array([[neighbours[0], neighbours[3], neighbours[5]],
-                     [neighbours[1], my_status, neighbours[6]],
-                     [neighbours[2], neighbours[4], neighbours[7]]])
+    neighbourhood = numpy.array([[neighbours[0], neighbours[3], neighbours[5]],  # left side
+                     [neighbours[1], my_status, neighbours[6]],  # middle
+                     [neighbours[2], neighbours[4], neighbours[7]]])  # right side
 
     return my_status, neighbourhood
 
@@ -103,23 +103,23 @@ def check_neighbours_me_dead(top_l, top, top_r, mid_l, mid_r, bottom_l, bottom, 
     return 0
 
 
-def update_grid(grid):
+def update_grid(grid, grid_num):
     grid = numpy.array(grid)  # grid we will return as the final modified version
     og_grid = numpy.copy(grid)  # grid where we will only modify to mark which dead cells to check
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if i != 0 and i != 39 and j != 0 and j != 39 and og_grid[i][j] == 1:
+            if i != 0 and i != grid_num - 1 and j != 0 and j != grid_num - 1 and og_grid[i][j] == 1:
                 neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
                                          og_grid[i - 1][j], og_grid[i + 1][j],
                                          og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
 
                 grid[i][j] = neighbourhood[0]
-                og_grid[i - 1: i + 2, j - 1: j + 2] = neighbourhood[1]
+                # og_grid[i - 1: i + 2, j - 1: j + 2] = neighbourhood[1]
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if i != 0 and i != 39 and j != 0 and j != 39 and og_grid[i][j] == 2:
+            if i != 0 and i != grid_num - 1 and j != 0 and j != grid_num - 1 and og_grid[i][j] == 0:
                 grid[i][j] = check_neighbours_me_dead(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
                                                       og_grid[i - 1][j], og_grid[i + 1][j],
                                                       og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
@@ -131,7 +131,7 @@ def main():
 
     run = True
     game_running = False
-    grid_num = 40
+    grid_num = 100
     grid = set_grid_array(grid_num)
     timer = 0
 
@@ -150,8 +150,8 @@ def main():
 
         timer += 1
 
-        if timer >= 500 and game_running:
-            grid = update_grid(grid)
+        if timer >= 100 and game_running:
+            grid = update_grid(grid, grid_num)
             timer = 0
 
         draw_grid(grid_num, grid_x, grid_y, sc)
