@@ -109,13 +109,48 @@ def update_grid(grid, grid_num):
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if i != 0 and i != grid_num - 1 and j != 0 and j != grid_num - 1 and og_grid[i][j] == 1:
-                neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
-                                         og_grid[i - 1][j], og_grid[i + 1][j],
-                                         og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
+            if og_grid[i][j] == 1:
+                neighbourhood = grid
+                if i != 0 and i != grid_num - 1 and j != 0 and j != grid_num - 1:  # middle pixels
+                    neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
+                                             og_grid[i - 1][j], og_grid[i + 1][j],
+                                             og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
+                elif i == 0:  # pixels meet left side
+                    if j == 0:  # top left corner
+                        neighbourhood = check_neighbours_me_alive(og_grid[grid_num - 1][grid_num - 1], og_grid[i][grid_num - 1], og_grid[i + 1][grid_num - 1],
+                                                                  og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                                  og_grid[grid_num - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
+                    elif j == grid_num - 1:  # bottom left corner
+                        neighbourhood = check_neighbours_me_alive(og_grid[grid_num - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
+                                                                  og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                                  og_grid[grid_num - 1][0], og_grid[i][0], og_grid[i + 1][0])
+                    else:  # not corner
+                        neighbourhood = check_neighbours_me_alive(og_grid[grid_num - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
+                                                                  og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                                  og_grid[grid_num - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
+                elif i == grid_num - 1:  # pixels meet right side
+                    if j == 0:  # top right corner
+                        neighbourhood = check_neighbours_me_alive(og_grid[i - 1][grid_num - 1], og_grid[i][grid_num - 1], og_grid[0][grid_num - 1],
+                                                                  og_grid[i - 1][j], og_grid[0][j],
+                                                                  og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[0][j + 1])
+                    elif j == grid_num - 1:  # bottom right corner
+                        neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[0][j - 1],
+                                                                  og_grid[i - 1][j], og_grid[0][j],
+                                                                  og_grid[i - 1][0], og_grid[i][0], og_grid[0][0])
+                    else:  # everything else
+                        neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[grid_num + 1][j - 1],
+                                                                  og_grid[i - 1][j], og_grid[grid_num + 1][j],
+                                                                  og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[grid_num + 1][j + 1])
+                elif j == 0:  # pixels hitting top
+                    neighbourhood = check_neighbours_me_alive(og_grid[i - 1][grid_num - 1], og_grid[i][grid_num - 1], og_grid[i + 1][grid_num - 1],
+                                                              og_grid[i - 1][j], og_grid[i + 1][j],
+                                                              og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
+                else:  # pixels hitting bottom
+                    neighbourhood = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1], og_grid[i + 1][j - 1],
+                                                              og_grid[i - 1][j], og_grid[i + 1][j],
+                                                              og_grid[i - 1][0], og_grid[i][0], og_grid[i + 1][0])
 
                 grid[i][j] = neighbourhood[0]
-                # og_grid[i - 1: i + 2, j - 1: j + 2] = neighbourhood[1]
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -124,8 +159,68 @@ def update_grid(grid, grid_num):
                                                       og_grid[i - 1][j], og_grid[i + 1][j],
                                                       og_grid[i - 1][j + 1], og_grid[i][j + 1], og_grid[i + 1][j + 1])
 
+            elif i == 0:  # pixels meet left side
+                if j == 0:  # top left corner
+                    grid[i][j] = check_neighbours_me_alive(og_grid[grid_num - 1][grid_num - 1],
+                                                              og_grid[i][grid_num - 1], og_grid[i + 1][grid_num - 1],
+                                                              og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                              og_grid[grid_num - 1][j + 1], og_grid[i][j + 1],
+                                                              og_grid[i + 1][j + 1])
+                elif j == grid_num - 1:  # bottom left corner
+                    grid[i][j] = check_neighbours_me_alive(og_grid[grid_num - 1][j - 1], og_grid[i][j - 1],
+                                                              og_grid[i + 1][j - 1],
+                                                              og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                              og_grid[grid_num - 1][0], og_grid[i][0],
+                                                              og_grid[i + 1][0])
+                else:  # not corner
+                    grid[i][j] = check_neighbours_me_alive(og_grid[grid_num - 1][j - 1], og_grid[i][j - 1],
+                                                              og_grid[i + 1][j - 1],
+                                                              og_grid[grid_num - 1][j], og_grid[i + 1][j],
+                                                              og_grid[grid_num - 1][j + 1], og_grid[i][j + 1],
+                                                              og_grid[i + 1][j + 1])
+            elif i == grid_num - 1:  # pixels meet right side
+                if j == 0:  # top right corner
+                    grid[i][j] = check_neighbours_me_alive(og_grid[i - 1][grid_num - 1], og_grid[i][grid_num - 1],
+                                                              og_grid[0][grid_num - 1],
+                                                              og_grid[i - 1][j], og_grid[0][j],
+                                                              og_grid[i - 1][j + 1], og_grid[i][j + 1],
+                                                              og_grid[0][j + 1])
+                elif j == grid_num - 1:  # bottom right corner
+                    grid[i][j] = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1],
+                                                              og_grid[0][j - 1],
+                                                              og_grid[i - 1][j], og_grid[0][j],
+                                                              og_grid[i - 1][0], og_grid[i][0], og_grid[0][0])
+                else:  # everything else
+                    grid[i][j] = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1],
+                                                              og_grid[grid_num + 1][j - 1],
+                                                              og_grid[i - 1][j], og_grid[grid_num + 1][j],
+                                                              og_grid[i - 1][j + 1], og_grid[i][j + 1],
+                                                              og_grid[grid_num + 1][j + 1])
+            elif j == 0:  # pixels hitting top
+                grid[i][j] = check_neighbours_me_alive(og_grid[i - 1][grid_num - 1], og_grid[i][grid_num - 1],
+                                                          og_grid[i + 1][grid_num - 1],
+                                                          og_grid[i - 1][j], og_grid[i + 1][j],
+                                                          og_grid[i - 1][j + 1], og_grid[i][j + 1],
+                                                          og_grid[i + 1][j + 1])
+            else:  # pixels hitting bottom
+                grid[i][j] = check_neighbours_me_alive(og_grid[i - 1][j - 1], og_grid[i][j - 1],
+                                                          og_grid[i + 1][j - 1],
+                                                          og_grid[i - 1][j], og_grid[i + 1][j],
+                                                          og_grid[i - 1][0], og_grid[i][0], og_grid[i + 1][0])
+
     return grid
 
+
+def draw_speed_bar(x, y, speed, mouse_pos, screen):
+    speed = speed / 2
+    pygame.draw.rect(screen, (50, 50, 50), (x, y, 100, 25))
+    pygame.draw.rect(screen, (100, 100, 100), (x + speed, y, 25, 25))
+
+    if x < mouse_pos[0] < x + 100 and y < mouse_pos[1] < y + 25:
+        print(str(x) + " " + str(y) + "||" + str(mouse_pos))
+        speed = mouse_pos[0] - x
+
+    return speed * 2
 
 def main():
 
@@ -134,26 +229,37 @@ def main():
     grid_num = 100
     grid = set_grid_array(grid_num)
     timer = 0
+    speed = 100
 
     while run:
+        mouse_p = (-100, -100)
+
         sc.fill((0, 0, 0))
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if mouse_pos[0] <= grid_x and mouse_pos[1] <= grid_y:
+                mouse_p = mouse_pos
+
+                if mouse_pos[0] <= grid_x and mouse_pos[1] <= grid_y:  # making a pixel dead or alive
                     arr_pos = change_grid_status(grid_num, mouse_pos, grid_x)
-                    grid[arr_pos[0]][arr_pos[1]] = 1
-                if mouse_pos[0] >= screen_x - 70 and mouse_pos[1] >= screen_y - 70:
+
+                    # toggle a pixel dead or alive
+                    if grid[arr_pos[0]][arr_pos[1]] == 1:
+                        grid[arr_pos[0]][arr_pos[1]] = 0
+                    else:
+                        grid[arr_pos[0]][arr_pos[1]] = 1
+                elif mouse_pos[0] >= screen_x - 70 and mouse_pos[1] >= screen_y - 70:  # start or pause game
                     game_running = not game_running
             elif event.type == pygame.QUIT:
                 run = False
 
         timer += 1
 
-        if timer >= 100 and game_running:
+        if timer >= (200 - speed) and game_running:
             grid = update_grid(grid, grid_num)
             timer = 0
 
+        speed = draw_speed_bar(screen_x - 110, screen_y - 200, speed, mouse_p, sc)
         draw_grid(grid_num, grid_x, grid_y, sc)
         draw_boxes(grid, sc, grid_x)
         draw_start_pause_button(game_running, screen_x, screen_y, sc)
